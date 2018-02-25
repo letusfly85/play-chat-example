@@ -1,0 +1,37 @@
+package controllers
+
+import javax.inject.{ Inject, Singleton }
+
+import actors.chat.{ ChatRequestActor, ChatResponseActor }
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.{ Flow, Keep }
+import entities.ChatEvent
+import play.api.libs.json.JsValue
+import play.api.libs.streams.ActorFlow
+import play.api.mvc.WebSocket
+import play.api.mvc._
+import services.ChatRoomFactory
+
+@Singleton
+class ChatController @Inject() (cc: ControllerComponents) extends AbstractController(cc) {
+
+  implicit val system = ActorSystem()
+  implicit val mat = ActorMaterializer()
+
+  def start(roomId: String) = WebSocket.accept[JsValue, JsValue] { request =>
+
+    val userId = request.queryString("user-id").headOption.getOrElse("unknown")
+
+    val userInput: Flow[JsValue, ChatEvent, _] =
+      ActorFlow.actorRef[JsValue, ChatEvent](out => ChatRequestActor.props(out, userId))
+
+    val room = ChatRoomFactory.startRoom(roomId, userId)
+
+    val userOutPut: Flow[ChatEvent, JsValue, _] =
+      ActorFlow.actorRef[ChatEvent, JsValue](out => ChatResponseActor.props(out, userId))
+
+    userInput.viaMat(room.bus)(Keep.right).viaMat(userOutPut)(Keep.right)
+  }
+
+}
