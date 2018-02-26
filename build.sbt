@@ -76,7 +76,7 @@ libraryDependencies ++= {
 
     // specification dependencies
     "com.typesafe.play" %% "play-specs2" % "2.6.7" % Test,
-    "org.specs2" %% "specs2" % "2.5" % Test,
+    "org.specs2" %% "specs2" % "2.5" % Test
   )
 }
 
