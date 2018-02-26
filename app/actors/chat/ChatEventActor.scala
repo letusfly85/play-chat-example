@@ -1,7 +1,6 @@
 package actors.chat
 
 import akka.actor.{ Actor, ActorRef, PoisonPill, Props }
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import entities.{ Join, Leave, SendMessage }
 import play.api.Logger
@@ -9,6 +8,7 @@ import play.api.libs.json.JsValue
 import play.libs.Json
 
 class ChatRequestActor(out: ActorRef, userId: String) extends Actor {
+  import entities.SendMessage._
 
   def receive = {
     case message: ObjectNode =>
@@ -36,6 +36,7 @@ object ChatRequestActor {
 
 case class Simplemessage(message: String)
 class ChatResponseActor(out: ActorRef, currentId: String) extends Actor {
+  import entities.SendMessage._
 
   import com.fasterxml.jackson.databind.ObjectMapper
 

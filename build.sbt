@@ -28,7 +28,7 @@ libraryDependencies ++= {
   val elastic4sVersion = "6.1.4"
   val logbackV = "1.2.3"
   val logbackJsonV = "0.1.5"
-  val jacksonV = "2.8.9" // 2.9.3 not working with logback-json dependencies
+  // val jacksonV = "2.8.9" // 2.9.3 not working with logback-json dependencies
   Seq(
     guice,
     ehcache,
@@ -67,12 +67,6 @@ libraryDependencies ++= {
     "org.slf4j" % "slf4j-api" % "1.7.25",
     "ch.qos.logback" % "logback-core" % logbackV,
     "ch.qos.logback" % "logback-classic" % logbackV,
-    "ch.qos.logback.contrib" % "logback-json-core" % logbackJsonV,
-    "ch.qos.logback.contrib" % "logback-json-classic" % logbackJsonV,
-    "ch.qos.logback.contrib" % "logback-jackson" % logbackJsonV,
-    "com.fasterxml.jackson.core" % "jackson-core" % jacksonV,
-    "com.fasterxml.jackson.core" % "jackson-databind" % jacksonV,
-    "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonV,
 
     // specification dependencies
     "com.typesafe.play" %% "play-specs2" % "2.6.7" % Test,
