@@ -3,14 +3,21 @@ package actors.chat
 import akka.actor.{ Actor, ActorRef, PoisonPill, Props }
 import entities.{ Join, Leave, SendMessage }
 import play.api.Logger
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{ JsError, JsSuccess, JsValue, Json }
 
 class ChatRequestActor(out: ActorRef, userId: String) extends Actor {
 
   def receive = {
     case message: JsValue =>
       Logger.info(message.toString())
-      out ! SendMessage(userId = userId, message = message.toString)
+
+      Json.fromJson[SendMessage](message) match {
+        case JsSuccess(sendMessage, _) =>
+          out ! SendMessage(userId = userId, message = sendMessage.message)
+
+        case JsError(error) =>
+          out ! SendMessage(userId = userId, message = error.toString())
+      }
   }
 
   override def preStart(): Unit = {
@@ -31,8 +38,6 @@ object ChatRequestActor {
 class ChatResponseActor(out: ActorRef, currentId: String) extends Actor {
   def receive = {
     case message: SendMessage =>
-      Logger.info("sending message")
-      Logger.info(message.toString)
       out ! Json.toJson(message)
 
     case Join(userId) =>

@@ -3,11 +3,11 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import actors.chat.{ChatRequestActor, ChatResponseActor}
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Keep}
 import entities.ChatEvent
-import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import play.api.libs.json.JsValue
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.WebSocket
 import play.api.mvc._
@@ -32,25 +32,6 @@ class ChatController @Inject() (
       ActorFlow.actorRef[ChatEvent, JsValue](out => ChatResponseActor.props(out, userId))
 
     userInput.viaMat(room.bus)(Keep.right).viaMat(userOutPut)(Keep.right)
-
-    /*
-    val result = ActorFlow.actorRef {out =>
-       MySocketActor.props(out)
-    }
-    result
-    */
   }
 
 }
-
-object MySocketActor {
-  def props(out: ActorRef) = Props(new MySocketActor(out))
-}
-
-class MySocketActor(out: ActorRef) extends Actor {
-  def receive = {
-    case out: JsValue =>
-      println(out.toString())
-  }
-}
-
