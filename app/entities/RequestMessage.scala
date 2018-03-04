@@ -9,11 +9,11 @@ case class RequestMessage(subscribers: Option[List[String]], message: String) ex
 object RequestMessage {
   implicit def requestMessageReads: Reads[RequestMessage] = (
     (JsPath \ "subscribers").readNullable[List[String]] and
-      (JsPath \ "message").read[String]
-    )(RequestMessage.apply _)
+    (JsPath \ "message").read[String]
+  )(RequestMessage.apply _)
 
   implicit def requestMessageWrites: Writes[RequestMessage] = (
     (JsPath \ "subscribers").writeNullable[List[String]] and
-      (JsPath \ "message").write[String]
-    )(unlift(RequestMessage.unapply))
+    (JsPath \ "message").write[String]
+  )(unlift(RequestMessage.unapply))
 }

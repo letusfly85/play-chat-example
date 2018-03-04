@@ -7,6 +7,7 @@ import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Flow, Keep}
 import entities.ChatEvent
+import play.api.Logger
 import play.api.libs.json.JsValue
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.WebSocket
@@ -20,7 +21,10 @@ class ChatController @Inject() (
   implicit val materializer: Materializer,
  ) extends AbstractController(cc) {
 
-  def start(roomId: String) = WebSocket.accept[JsValue, JsValue] { implicit request =>
+  def start(roomId: String) = WebSocket.accept[JsValue, JsValue] { request =>
+    Logger.info("############################")
+    Logger.info(request.headers.toString())
+    Logger.info("############################")
     val userId = request.queryString("user-id").headOption.getOrElse("unknown")
 
     val userInput: Flow[JsValue, ChatEvent, _] =

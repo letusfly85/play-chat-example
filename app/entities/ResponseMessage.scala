@@ -9,11 +9,11 @@ case class ResponseMessage(publisher: String, requestMessage: RequestMessage) ex
 object ResponseMessage {
   implicit def responseMessageReads: Reads[ResponseMessage] = (
     (JsPath \ "publisher").read[String] and
-      (JsPath \ "request_message").read[RequestMessage]
-    )(ResponseMessage.apply _)
+    (JsPath \ "request_message").read[RequestMessage]
+  )(ResponseMessage.apply _)
 
   implicit def responseMessageWrites: Writes[ResponseMessage] = (
     (JsPath \ "publisher").write[String] and
-      (JsPath \ "request_message").write[RequestMessage]
-    )(unlift(ResponseMessage.unapply))
+    (JsPath \ "request_message").write[RequestMessage]
+  )(unlift(ResponseMessage.unapply))
 }
